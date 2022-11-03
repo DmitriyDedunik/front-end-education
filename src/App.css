@@ -1,0 +1,13 @@
+
+.borderByRezuan{
+  background: green;
+}
+
+.container{
+  --background: "white";
+  width: 200px;
+  height: 200px;
+  border: 1px solid;
+  position: relative;
+  background: var(--background);
+}
