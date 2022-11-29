@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Divider, List, ListItem, ListItemText} from "@mui/material";
 
 const questArray = [
   {
@@ -29,21 +30,42 @@ export default function Quiz(){
     setNumberQuestion(prev => ++prev);
   }
 
+
   return(
       <>
         {numberQuestion < questArray.length ?(
-                <div>
+            <List component="nav" aria-label="mailbox folders">
+              <Divider />
                   {questArray[numberQuestion].question}
                   {
                     questArray[numberQuestion].answer.map((answer, index) =>(
-                        <div>
-                          <button value={answer} onClick={()=> handleSubmit(index + 1)}>{answer}</button>
-                        </div>
+                          // @ts-ignore
+                          <ListItem button divider value={answer} onClick={()=> handleSubmit(index + 1)}>
+                            <ListItemText primary={answer} />
+                          </ListItem>
                     ))
                   }
-                </div>
+              <Divider light />
+            </List>
             ) : <p>количество правильных ответов: {rightAnswerCount}</p>
         }
       </>
   )
+  // return(
+  //     <>
+  //       {numberQuestion < questArray.length ?(
+  //           <div>
+  //             {questArray[numberQuestion].question}
+  //             {
+  //               questArray[numberQuestion].answer.map((answer, index) =>(
+  //                   <div>
+  //                     <button value={answer} onClick={()=> handleSubmit(index + 1)}>{answer}</button>
+  //                   </div>
+  //               ))
+  //             }
+  //           </div>
+  //       ) : <p>количество правильных ответов: {rightAnswerCount}</p>
+  //       }
+  //     </>
+  // )
 }
