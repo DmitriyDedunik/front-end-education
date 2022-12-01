@@ -29,10 +29,9 @@ const buttonTask = {
     margin: '5px'
 }
 
-export function TaskList() {
+export function TaskList({currentDay}: any) {
 
-    const {stateTaskArray, setStateTaskArray, lastId, setLastId, currentDayTasks} = useTaskState()
-
+    const {stateTaskArray, setStateTaskArray, lastId, setLastId} = useTaskState()
     const [textValue, setTextValue] = useState('')
     const [stateEditTask, setStateEditTask] = useState(false)
     const [indexTask, setIndexTask] = useState<number>(0)
@@ -48,7 +47,7 @@ export function TaskList() {
             setTextValue('')
             setStateEditTask(false)
         } else {
-            stateTaskArray.push({task: textValue, done: false, dateTask: new Date(), id: lastId})
+            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId})
             setStateTaskArray([...stateTaskArray])
             setTextValue('')
             setLastId(lastId + 1)
@@ -90,27 +89,36 @@ export function TaskList() {
                 </Button>
             </Box>
             <Grid container sx={{width: '100%', margin: '20px'}} spacing={2}>
-                {currentDayTasks.map((task) => {
-                    debugger
-                    return <Grid item xs={12} sx={taskCellSX}>
-                        <Checkbox checked={task.done} onChange={() => setCheckboxStatus(task.id)}/>
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                flex: '1 0',
-                                textDecoration: task.done ? 'line-through' : "none"
-                            }}
-                            fontSize={'14px'}
-                        >
-                            {task.task}
-                        </Typography>
-                        <span>
+                {stateTaskArray.map((task) => {
+                    const dayEnd = new Date(
+                        currentDay.getFullYear(),
+                        currentDay.getMonth(),
+                        currentDay.getDate(),
+                        23,
+                        59,
+                        59)
+                    if (task.dateTask >= currentDay && task.dateTask <= dayEnd) {
+                        return <Grid item xs={12} sx={taskCellSX}>
+                            <Checkbox checked={task.done} onChange={() => setCheckboxStatus(task.id)}/>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    flex: '1 0',
+                                    textDecoration: task.done ? 'line-through' : "none"
+                                }}
+                                fontSize={'14px'}
+                            >
+                                {task.task}
+                            </Typography>
+                            <span>
                               <Button variant="contained" sx={buttonTask} color="warning"
                                       onClick={() => editTask(task.id)}>Edit</Button>
                               <Button variant="contained" sx={buttonTask} color="error"
                                       onClick={() => deleteTask(task.id)}>Delete</Button>
                         </span>
-                    </Grid>
+                        </Grid>
+                    }
+                    return null
                 })}
             </Grid>
         </Grid>

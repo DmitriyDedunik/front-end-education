@@ -21,11 +21,10 @@ const dayWeekStr = [
     'Воскресенье'
 ];
 
-export function Calendar() {
+export function Calendar({setCurrentDate, currentDay, getCurrentDayTasks}:any) {
 
     const [numbersArr, setNumbersArr] = useState<Date[]>([])
     const [dayForWeek, setDayForWeek] = useState<Date>(new Date())
-    const {selectedDay} = useTaskState()
 
     const today = new Date()
     const dayWeek = today.getDay()
@@ -78,10 +77,11 @@ export function Calendar() {
             <List component="nav" aria-label="mailbox folders">
                 <Divider/>
                 {numbersArr.map((day, index) => (
-                        <ListItem sx={buttonCalendar} button divider onClick={() => selectedDay(day)}>
+                        <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)}>
                             <ListItemText primary={
                                 `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
                             }/>
+                            <span>{getCurrentDayTasks(day).length}</span>
                         </ListItem>
                     )
                 )}

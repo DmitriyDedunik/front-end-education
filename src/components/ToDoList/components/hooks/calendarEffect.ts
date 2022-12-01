@@ -24,28 +24,26 @@ export function useTaskState(){
         }
     ];
 
-    const [stateTaskArray , setStateTaskArray] = useState(taskArray)
+    const [stateTaskArray , setStateTaskArray] = useState<ITask[]>(taskArray)
     const [lastId, setLastId] = useState<number>(2)
-    const [currentDayTasks , setCurrentDayTasks] = useState<ITask[]>([])
 
-    const selectedDay = (day: Date):void =>{
-        const thatDayTasks = stateTaskArray.filter(el => {
-                const dayEnd = new Date(
-                    day.getFullYear(),
-                    day.getMonth(),
-                    day.getDate(),
-                    23,
-                    59,
-                    59
-                )
-                return el.dateTask >= day && el.dateTask <= dayEnd
-            }
-        )
+    // const selectedDay = (day: Date):void =>{
+    //     const thatDayTasks = stateTaskArray.filter(el => {
+    //             const dayEnd = new Date(
+    //                 day.getFullYear(),
+    //                 day.getMonth(),
+    //                 day.getDate(),
+    //                 23,
+    //                 59,
+    //                 59
+    //             )
+    //             return el.dateTask >= day && el.dateTask <= dayEnd
+    //         }
+    //     )
+    //
+    //     setCurrentDayTasks([...thatDayTasks])
+    // }
 
-        setCurrentDayTasks([...thatDayTasks])
-        debugger
-    }
-
-    return { stateTaskArray, setStateTaskArray, lastId, setLastId, selectedDay, currentDayTasks }
+    return {stateTaskArray, setStateTaskArray, lastId, setLastId }
 
 }
