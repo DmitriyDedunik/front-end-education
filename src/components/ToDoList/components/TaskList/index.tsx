@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
 import {Box, Button, Checkbox, Grid, TextField, Typography} from "@mui/material";
-import {useTaskState} from "../hooks/calendarEffect";
+import {useLastID, ITask} from "../hooks/calendarEffect";
 import styled from "styled-components";
 
 const addTaskContainerSX = {
@@ -29,20 +29,26 @@ const buttonTask = {
     margin: '5px'
 }
 
-export function TaskList({currentDay}: any) {
+type Props = {
+    currentDay: Date,
+    setStateTaskArray: Dispatch<SetStateAction<ITask[]>>,
+    stateTaskArray: ITask[]
+}
 
-    const {stateTaskArray, setStateTaskArray, lastId, setLastId} = useTaskState()
-    const [textValue, setTextValue] = useState('')
-    const [stateEditTask, setStateEditTask] = useState(false)
+export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props) {
+
+    const {lastId, setLastId} = useLastID()
+    const [textValue, setTextValue] = useState<string>('')
+    const [stateEditTask, setStateEditTask] = useState<boolean>(false)
     const [indexTask, setIndexTask] = useState<number>(0)
 
-    const changeHandler = (event: any) => {
+    const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setTextValue(event.currentTarget.value)
     }
 
     const handleSubmit = () => {
         if (stateEditTask) {
-            const newTaskArr = stateTaskArray.map(el => el.id === indexTask ? {...el, task: textValue} : el)
+            const newTaskArr = stateTaskArray.map((el) => el.id === indexTask ? {...el, task: textValue} : el)
             setStateTaskArray(newTaskArr)
             setTextValue('')
             setStateEditTask(false)
@@ -61,7 +67,7 @@ export function TaskList({currentDay}: any) {
     }
 
     const editTask = (id: number) => {
-        const currentTask = stateTaskArray.find(el => el.id === id)?.task ?? ""
+        const currentTask = stateTaskArray.find((el) => el.id === id)?.task ?? ""
         setTextValue(currentTask)
         setIndexTask(id)
         setStateEditTask(true)
@@ -80,7 +86,7 @@ export function TaskList({currentDay}: any) {
                     placeholder="Enter task..."
                     sx={addTaskInputSX} type="text"
                     value={textValue}
-                    onChange={(e) => changeHandler(e)}
+                    onChange={changeHandler}
                 />
                 <Button
                     variant="contained"
@@ -89,7 +95,7 @@ export function TaskList({currentDay}: any) {
                 </Button>
             </Box>
             <Grid container sx={{width: '100%', margin: '20px'}} spacing={2}>
-                {stateTaskArray.map((task) => {
+                {stateTaskArray.map((task: any) => {
                     const dayEnd = new Date(
                         currentDay.getFullYear(),
                         currentDay.getMonth(),

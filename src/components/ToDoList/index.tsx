@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Grid, Typography} from "@mui/material";
 
 import {TaskList} from "./components/TaskList";
@@ -12,13 +12,13 @@ const topGrid = {
     flexWrap: 'nowrap'
 }
 
-export const ToDoList = () => {
+export const ToDoList: FC = () => {
 
     const [currentDay, setCurrentDate] = useState<Date>(new Date())
 
-    const {stateTaskArray} = useTaskState()
+    const {stateTaskArray, setStateTaskArray} = useTaskState()
 
-    const getCurrentDayTasks = (day: Date):ITask[] =>{
+    const getCurrentDayTasks = (day: Date): ITask[] => {
         const thatDayTasks = stateTaskArray.filter(el => {
                 const dayEnd = new Date(
                     day.getFullYear(),
@@ -35,12 +35,17 @@ export const ToDoList = () => {
         return thatDayTasks;
     }
 
-    return(
+    return (
         <>
             <Typography variant="h3" textAlign="center">TodoList</Typography>
             <Grid container spacing={2} sx={topGrid}>
-                <Calendar setCurrentDate={setCurrentDate} currentDay={currentDay} getCurrentDayTasks={getCurrentDayTasks}/>
-                <TaskList currentDay={currentDay}/>
+                <Calendar setCurrentDate={setCurrentDate}
+                          getCurrentDayTasks={getCurrentDayTasks}
+                />
+                <TaskList currentDay={currentDay}
+                          setStateTaskArray={setStateTaskArray}
+                          stateTaskArray={stateTaskArray}
+                />
             </Grid>
         </>
     )

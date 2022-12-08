@@ -9,7 +9,7 @@ import {MuiTest} from "./components/MuiTest";
 import {Timer} from "./components/Timer";
 
 function App() {
-  const [showComponent, setShowComponent] = useState<String>();
+  const [showComponent, setShowComponent] = useState<string>();
   return (
     <div>
         <button onClick={() => setShowComponent('Calculator')}>Калькулятор</button>

@@ -1,9 +1,9 @@
-import {Divider, List, ListItem, ListItemText, IconButton} from "@mui/material";
+import {Divider, IconButton, List, ListItem, ListItemText} from "@mui/material";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as React from 'react';
-import {useState} from "react";
-import {useTaskState} from "../hooks/calendarEffect";
+import {Dispatch, FC, SetStateAction, useState} from 'react';
+import {ITask} from "../hooks/calendarEffect";
 
 const buttonCalendar = {
     border: '1px solid #00000036',
@@ -21,7 +21,12 @@ const dayWeekStr = [
     'Воскресенье'
 ];
 
-export function Calendar({setCurrentDate, currentDay, getCurrentDayTasks}:any) {
+type Props = {
+    setCurrentDate: Dispatch<SetStateAction<Date>>
+    getCurrentDayTasks: (day: Date) => ITask[],
+}
+
+export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
 
     const [numbersArr, setNumbersArr] = useState<Date[]>([])
     const [dayForWeek, setDayForWeek] = useState<Date>(new Date())
@@ -74,9 +79,10 @@ export function Calendar({setCurrentDate, currentDay, getCurrentDayTasks}:any) {
                     <ExpandLessIcon/>
                 </IconButton>
             </div>
-            <List component="nav" aria-label="mailbox folders">
+            <List component="nav" aria-Slabel="mailbox folders">
                 <Divider/>
-                {numbersArr.map((day, index) => (
+                {numbersArr.map((day, index) =>
+                    (
                         <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)}>
                             <ListItemText primary={
                                 `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
@@ -94,4 +100,4 @@ export function Calendar({setCurrentDate, currentDay, getCurrentDayTasks}:any) {
             </div>
         </div>
     )
-}
+};
