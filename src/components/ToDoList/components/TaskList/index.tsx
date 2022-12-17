@@ -1,7 +1,19 @@
 import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
-import {Box, Button, Checkbox, Grid, TextField, Typography} from "@mui/material";
-import {useLastID, ITask} from "../hooks/calendarEffect";
+import {
+    Box,
+    Button,
+    Checkbox,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Select, SelectChangeEvent,
+    TextField,
+    Typography
+} from "@mui/material";
+import {useLastID, ITask, IMarker} from "../hooks/calendarEffect";
 import styled from "styled-components";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 const addTaskContainerSX = {
     display: 'flex',
@@ -33,9 +45,15 @@ type Props = {
     currentDay: Date,
     setStateTaskArray: Dispatch<SetStateAction<ITask[]>>,
     stateTaskArray: ITask[]
+    stateMarkerArray: IMarker[]
 }
 
-export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props) {
+const TaskText = styled(Typography) <{ $isTaskDone: boolean }>`
+  font-size: 14px;
+  flex: 1 0;
+  text-decoration: ${({$isTaskDone}) => ($isTaskDone ? 'line-through' : "none")}`
+
+export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray}: Props) {
 
     const {lastId, setLastId} = useLastID()
     const [textValue, setTextValue] = useState<string>('')
@@ -53,7 +71,7 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props)
             setTextValue('')
             setStateEditTask(false)
         } else {
-            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId})
+            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId, typeTask: 'Работа'})
             setStateTaskArray([...stateTaskArray])
             setTextValue('')
             setLastId(lastId + 1)
@@ -78,10 +96,30 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props)
         setStateTaskArray([...stateTaskArray])
     }
 
+    const [age, setAge] = useState('');
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setAge(event.target.value);
+    };
 
     return (
         <Grid item xs={9}>
             <Box sx={addTaskContainerSX}>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Тип</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={age}
+                        label="Тип"
+                        onChange={handleChange}
+                    >
+                        {stateMarkerArray.map((marker) => (
+                            <MenuItem sx={{display: "flex", alignItems: "center"}} value={marker.id} ><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
+                        ))
+                        }
+                    </Select>
+                </FormControl>
                 <TextField
                     placeholder="Enter task..."
                     sx={addTaskInputSX} type="text"
@@ -95,7 +133,7 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props)
                 </Button>
             </Box>
             <Grid container sx={{width: '100%', margin: '20px'}} spacing={2}>
-                {stateTaskArray.map((task: any) => {
+                {stateTaskArray.map((task) => {
                     const dayEnd = new Date(
                         currentDay.getFullYear(),
                         currentDay.getMonth(),
@@ -104,24 +142,20 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray}: Props)
                         59,
                         59)
                     if (task.dateTask >= currentDay && task.dateTask <= dayEnd) {
-                        return <Grid item xs={12} sx={taskCellSX}>
+                        return <Grid item xs={12} sx={taskCellSX} key={task.id}>
                             <Checkbox checked={task.done} onChange={() => setCheckboxStatus(task.id)}/>
-                            <Typography
+                            <TaskText
                                 variant="h5"
-                                sx={{
-                                    flex: '1 0',
-                                    textDecoration: task.done ? 'line-through' : "none"
-                                }}
-                                fontSize={'14px'}
+                                $isTaskDone={task.done}
                             >
                                 {task.task}
-                            </Typography>
+                            </TaskText>
                             <span>
-                              <Button variant="contained" sx={buttonTask} color="warning"
-                                      onClick={() => editTask(task.id)}>Edit</Button>
-                              <Button variant="contained" sx={buttonTask} color="error"
-                                      onClick={() => deleteTask(task.id)}>Delete</Button>
-                        </span>
+                                <Button variant="contained" sx={buttonTask} color="warning"
+                                        onClick={() => editTask(task.id)}>Edit</Button>
+                                <Button variant="contained" sx={buttonTask} color="error"
+                                        onClick={() => deleteTask(task.id)}>Delete</Button>
+                                </span>
                         </Grid>
                     }
                     return null

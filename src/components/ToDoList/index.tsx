@@ -3,7 +3,7 @@ import {Grid, Typography} from "@mui/material";
 
 import {TaskList} from "./components/TaskList";
 import {Calendar} from "./components/Calendar";
-import {useTaskState, ITask} from "./components/hooks/calendarEffect";
+import {ITask, useMarker, useTaskState} from "./components/hooks/calendarEffect";
 
 const topGrid = {
     marginTop: '100px',
@@ -18,8 +18,10 @@ export const ToDoList: FC = () => {
 
     const {stateTaskArray, setStateTaskArray} = useTaskState()
 
+    const { stateMarkerArray, setstateMarkerArray } = useMarker()
+
     const getCurrentDayTasks = (day: Date): ITask[] => {
-        const thatDayTasks = stateTaskArray.filter(el => {
+        return stateTaskArray.filter(el => {
                 const dayEnd = new Date(
                     day.getFullYear(),
                     day.getMonth(),
@@ -30,9 +32,7 @@ export const ToDoList: FC = () => {
                 )
                 return el.dateTask >= day && el.dateTask <= dayEnd
             }
-        )
-
-        return thatDayTasks;
+        );
     }
 
     return (
@@ -45,6 +45,7 @@ export const ToDoList: FC = () => {
                 <TaskList currentDay={currentDay}
                           setStateTaskArray={setStateTaskArray}
                           stateTaskArray={stateTaskArray}
+                          stateMarkerArray = {stateMarkerArray}
                 />
             </Grid>
         </>

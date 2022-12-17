@@ -4,11 +4,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as React from 'react';
 import {Dispatch, FC, SetStateAction, useState} from 'react';
 import {ITask} from "../hooks/calendarEffect";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 const buttonCalendar = {
     border: '1px solid #00000036',
     borderRadius: '6px',
-    margin: '4px'
+    margin: '4px',
+    display: 'block'
 }
 
 const dayWeekStr = [
@@ -32,7 +34,16 @@ export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
     const [dayForWeek, setDayForWeek] = useState<Date>(new Date())
 
     const today = new Date()
-    const dayWeek = today.getDay()
+
+    let dayWeek: number
+
+    if (today.getDay() === 0){
+        dayWeek = 7
+    }
+    else{
+        dayWeek = today.getDay()
+    }
+
     const firstDayWeekNumber = today.getDate() - dayWeek + 1;
 
     const numbers = [];
@@ -79,15 +90,21 @@ export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
                     <ExpandLessIcon/>
                 </IconButton>
             </div>
-            <List component="nav" aria-Slabel="mailbox folders">
+            <List component="nav" aria-label="mailbox folders">
                 <Divider/>
                 {numbersArr.map((day, index) =>
                     (
-                        <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)}>
-                            <ListItemText primary={
-                                `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
-                            }/>
-                            <span>{getCurrentDayTasks(day).length}</span>
+
+                        <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)} key={day.toString()}>
+                            <div>
+                                <ListItemText primary={
+                                    `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
+                                }/>
+                                <span>{getCurrentDayTasks(day).length}</span>
+                            </div>
+                            <div>
+                                <BookmarkIcon/>
+                            </div>
                         </ListItem>
                     )
                 )}
@@ -95,7 +112,7 @@ export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
             </List>
             <div style={{textAlign: "center"}} onClick={() => handleWeek(dayForWeek, true)}>
                 <IconButton>
-                    <ExpandMoreIcon/>
+                    <ExpandMoreIcon sx={{color: 'green'}}/>
                 </IconButton>
             </div>
         </div>
