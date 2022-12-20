@@ -56,7 +56,6 @@ const TaskText = styled(Typography) <{ $isTaskDone: boolean }>`
 export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray}: Props) {
 
     const {lastId, setLastId} = useLastID()
-    //const {lastMarkerID, setLastMarkerID} = useLastMarker()
     const [lastMarkerID, setLastMarkerID] = useState<number>(0)
     const [textValue, setTextValue] = useState<string>('')
     const [stateEditTask, setStateEditTask] = useState<boolean>(false)

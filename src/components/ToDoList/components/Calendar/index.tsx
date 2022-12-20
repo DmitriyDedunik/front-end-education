@@ -98,9 +98,8 @@ export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
                         <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)} key={day.toString()}>
                             <div>
                                 <ListItemText primary={
-                                    `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
+                                    `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]} ${getCurrentDayTasks(day).length}`
                                 }/>
-                                <span>{getCurrentDayTasks(day).length}</span>
                             </div>
                             <div>
                                 <BookmarkIcon/>
