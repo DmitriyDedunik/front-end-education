@@ -5,7 +5,7 @@ export interface ITask{
     task: string,
     done: boolean,
     dateTask: Date,
-    typeTask:string,
+    idTypeTask: number,
 }
 
 export interface IMarker{
@@ -21,14 +21,14 @@ export function useTaskState(){
             task: 'Вынести мусор',
             done: true,
             dateTask: new Date(),
-            typeTask: 'Работа',
+            idTypeTask: 0,
         },
         {
             id: 1,
             task: 'Помыть посуду',
             done: false,
             dateTask: new Date(),
-            typeTask: 'Работа',
+            idTypeTask: 1,
         }
     ];
 

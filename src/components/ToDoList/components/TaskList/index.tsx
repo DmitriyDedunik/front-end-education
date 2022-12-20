@@ -56,9 +56,12 @@ const TaskText = styled(Typography) <{ $isTaskDone: boolean }>`
 export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray}: Props) {
 
     const {lastId, setLastId} = useLastID()
+    //const {lastMarkerID, setLastMarkerID} = useLastMarker()
+    const [lastMarkerID, setLastMarkerID] = useState<number>(0)
     const [textValue, setTextValue] = useState<string>('')
     const [stateEditTask, setStateEditTask] = useState<boolean>(false)
     const [indexTask, setIndexTask] = useState<number>(0)
+    console.log(lastMarkerID);
 
     const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setTextValue(event.currentTarget.value)
@@ -71,7 +74,8 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
             setTextValue('')
             setStateEditTask(false)
         } else {
-            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId, typeTask: 'Работа'})
+            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId, idTypeTask: lastMarkerID})
+            debugger
             setStateTaskArray([...stateTaskArray])
             setTextValue('')
             setLastId(lastId + 1)
@@ -96,10 +100,8 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
         setStateTaskArray([...stateTaskArray])
     }
 
-    const [age, setAge] = useState('');
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value);
+    const handleChange = (event: SelectChangeEvent<number>) => {
+        setLastMarkerID(event.target.value as number);
     };
 
     return (
@@ -110,12 +112,12 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={age}
+                        value={lastMarkerID}
                         label="Тип"
                         onChange={handleChange}
                     >
                         {stateMarkerArray.map((marker) => (
-                            <MenuItem sx={{display: "flex", alignItems: "center"}} value={marker.id} ><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
+                            <MenuItem key={marker.id} sx={{display: "flex", alignItems: "center"}} value={marker.id}><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
                         ))
                         }
                     </Select>
