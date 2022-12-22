@@ -3,7 +3,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import * as React from 'react';
 import {Dispatch, FC, SetStateAction, useState} from 'react';
-import {ITask} from "../hooks/calendarEffect";
+import {useMarker} from "../hooks/calendarEffect";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 const buttonCalendar = {
@@ -24,14 +24,15 @@ const dayWeekStr = [
 ];
 
 type Props = {
-    setCurrentDate: Dispatch<SetStateAction<Date>>
-    getCurrentDayTasks: (day: Date) => ITask[],
+    setCurrentDate: Dispatch<SetStateAction<Date>>,
+    tasksByColors: (day: Date) => number[],
 }
 
-export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
+export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
 
     const [numbersArr, setNumbersArr] = useState<Date[]>([])
     const [dayForWeek, setDayForWeek] = useState<Date>(new Date())
+    const { stateMarkerArray } = useMarker()
 
     const today = new Date()
 
@@ -98,11 +99,14 @@ export const Calendar: FC<Props> = ({setCurrentDate, getCurrentDayTasks}) => {
                         <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)} key={day.toString()}>
                             <div>
                                 <ListItemText primary={
-                                    `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]} ${getCurrentDayTasks(day).length}`
+                                    `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
                                 }/>
                             </div>
                             <div>
-                                <BookmarkIcon/>
+                                {tasksByColors(day).map((color: number) => (
+                                    <BookmarkIcon sx={{color: stateMarkerArray[color].colorTask}}/>
+                                )
+                                )}
                             </div>
                         </ListItem>
                     )

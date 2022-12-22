@@ -18,7 +18,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 const addTaskContainerSX = {
     display: 'flex',
     margin: 'auto',
-    width: '500px',
+    width: '80%',
 }
 
 const addTaskInputSX = {
@@ -60,73 +60,80 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
     const [textValue, setTextValue] = useState<string>('')
     const [stateEditTask, setStateEditTask] = useState<boolean>(false)
     const [indexTask, setIndexTask] = useState<number>(0)
-    console.log(lastMarkerID);
 
-    const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
         setTextValue(event.currentTarget.value)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (): void => {
         if (stateEditTask) {
-            const newTaskArr = stateTaskArray.map((el) => el.id === indexTask ? {...el, task: textValue} : el)
+            const newTaskArr = stateTaskArray.map((el) => {
+                return el.id === indexTask ? {...el,
+                    task: textValue,
+                    idTypeTask: lastMarkerID,
+                } : el;
+            })
             setStateTaskArray(newTaskArr)
             setTextValue('')
             setStateEditTask(false)
+            setLastMarkerID(0)
         } else {
             stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId, idTypeTask: lastMarkerID})
-            debugger
             setStateTaskArray([...stateTaskArray])
             setTextValue('')
             setLastId(lastId + 1)
         }
     }
 
-    const deleteTask = (id: number) => {
+    const deleteTask = (id: number): void => {
         const taskArray = [...stateTaskArray].filter(el => el.id !== id) //копировать(деструктуризация) массив
-        // taskArray.splice(id, 1) // удаление строки по индексу из массива
         setStateTaskArray([...taskArray])
     }
 
-    const editTask = (id: number) => {
-        const currentTask = stateTaskArray.find((el) => el.id === id)?.task ?? ""
+    const editTask = (id: number): void => {
+        const currentElement = stateTaskArray.find((el) => el.id === id)
+        const currentTask = currentElement?.task ?? ""
+        const currentMarkerID = currentElement?.idTypeTask ?? 0
         setTextValue(currentTask)
         setIndexTask(id)
         setStateEditTask(true)
+        setLastMarkerID(currentMarkerID)
     }
 
-    const setCheckboxStatus = (index: number) => {
+    const setCheckboxStatus = (index: number): void => {
         stateTaskArray[index].done = !stateTaskArray[index].done;
         setStateTaskArray([...stateTaskArray])
     }
 
-    const handleChange = (event: SelectChangeEvent<number>) => {
+    const handleChange = (event: SelectChangeEvent<number>): void => {
         setLastMarkerID(event.target.value as number);
     };
 
     return (
         <Grid item xs={9}>
             <Box sx={addTaskContainerSX}>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Тип</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={lastMarkerID}
-                        label="Тип"
-                        onChange={handleChange}
-                    >
-                        {stateMarkerArray.map((marker) => (
-                            <MenuItem key={marker.id} sx={{display: "flex", alignItems: "center"}} value={marker.id}><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
-                        ))
-                        }
-                    </Select>
-                </FormControl>
-                <TextField
-                    placeholder="Enter task..."
-                    sx={addTaskInputSX} type="text"
-                    value={textValue}
-                    onChange={changeHandler}
-                />
+                    <FormControl fullWidth style={{display: "flex", flex: '0 2 auto'}}>
+                        <InputLabel id="demo-simple-select-label">Тип</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={lastMarkerID}
+                            label="Тип"
+                            onChange={handleChange}
+                            sx={{'#demo-simple-select':{display: "flex"}}}
+                        >
+                            {stateMarkerArray.map((marker) => (
+                                <MenuItem key={marker.id} sx={{display: "flex", alignItems: "center"}} value={marker.id}><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
+                            ))
+                            }
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        placeholder="Enter task..."
+                        sx={addTaskInputSX} type="text"
+                        value={textValue}
+                        onChange={changeHandler}
+                    />
                 <Button
                     variant="contained"
                     color={stateEditTask ? "warning" : "success"}
@@ -144,6 +151,7 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
                         59)
                     if (task.dateTask >= currentDay && task.dateTask <= dayEnd) {
                         return <Grid item xs={12} sx={taskCellSX} key={task.id}>
+                            <BookmarkIcon sx={{color: stateMarkerArray[task.idTypeTask].colorTask}}/>
                             <Checkbox checked={task.done} onChange={() => setCheckboxStatus(task.id)}/>
                             <TaskText
                                 variant="h5"

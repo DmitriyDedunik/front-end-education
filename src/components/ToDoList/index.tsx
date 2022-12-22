@@ -1,8 +1,8 @@
 import React, {FC, useState} from 'react';
 import {Grid, Typography} from "@mui/material";
 
-import {TaskList} from "./components/TaskList";
-import {Calendar} from "./components/Calendar";
+import {TaskList} from "./components/TaskList/TaskList";
+import {Calendar} from "./components/Calendar/Calendar";
 import {ITask, useMarker, useTaskState} from "./components/hooks/calendarEffect";
 
 const topGrid = {
@@ -15,10 +15,8 @@ const topGrid = {
 export const ToDoList: FC = () => {
 
     const [currentDay, setCurrentDate] = useState<Date>(new Date())
-
     const {stateTaskArray, setStateTaskArray} = useTaskState()
-
-    const { stateMarkerArray, setstateMarkerArray } = useMarker()
+    const { stateMarkerArray } = useMarker()
 
     const getCurrentDayTasks = (day: Date): ITask[] => {
         return stateTaskArray.filter(el => {
@@ -35,12 +33,28 @@ export const ToDoList: FC = () => {
         );
     }
 
+    const tasksByColors = (day: Date): number[] => {
+
+        const currentDayTasks = getCurrentDayTasks(day)
+
+        let colorsArr: number[] = []
+
+        currentDayTasks.forEach(el => {
+            if(colorsArr.indexOf(el.idTypeTask) === -1 && !el.done){
+                colorsArr.push(el.idTypeTask)
+            }
+        })
+
+        return colorsArr
+
+    }
+
     return (
         <>
             <Typography variant="h3" textAlign="center">TodoList</Typography>
             <Grid container spacing={2} sx={topGrid}>
                 <Calendar setCurrentDate={setCurrentDate}
-                          getCurrentDayTasks={getCurrentDayTasks}
+                          tasksByColors = {tasksByColors}
                 />
                 <TaskList currentDay={currentDay}
                           setStateTaskArray={setStateTaskArray}

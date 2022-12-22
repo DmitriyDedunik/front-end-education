@@ -13,6 +13,7 @@ export interface IMarker{
     typeTask: string,
     colorTask: string
 }
+
 export function useTaskState(){
 
     const taskArray: ITask[] = [
@@ -57,7 +58,7 @@ export function useMarker(){
             colorTask: 'blue'
         },
         {
-            id: 3,
+            id: 2,
             typeTask: 'Саморазвитие',
             colorTask: 'yellow'
         },
