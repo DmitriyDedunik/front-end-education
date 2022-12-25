@@ -103,8 +103,8 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
                                 }/>
                             </div>
                             <div>
-                                {tasksByColors(day).map((color: number) => (
-                                    <BookmarkIcon sx={{color: stateMarkerArray[color].colorTask}}/>
+                                {tasksByColors(day).map((color: number, index) => (
+                                    <BookmarkIcon key={index} sx={{color: stateMarkerArray[color].colorTask}}/>
                                 )
                                 )}
                             </div>

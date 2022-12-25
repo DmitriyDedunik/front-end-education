@@ -1,45 +1,9 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
-import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select, SelectChangeEvent,
-    TextField,
-    Typography
-} from "@mui/material";
+import React, {Dispatch, SetStateAction, useState} from "react";
+import {Grid} from "@mui/material";
 import {useLastID, ITask, IMarker} from "../hooks/calendarEffect";
-import styled from "styled-components";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-
-const addTaskContainerSX = {
-    display: 'flex',
-    margin: 'auto',
-    width: '80%',
-}
-
-const addTaskInputSX = {
-    width: '100%',
-    marginRight: '20px'
-}
-
-const taskCellSX = {
-    border: '1px solid #00000036',
-    borderRadius: '6px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-    margin: '5px',
-    alignItems: 'center',
-    paddingTop: '0px!important'
-}
-
-const buttonTask = {
-    margin: '5px'
-}
+import {FormForMarker} from "./componentsTaskList/FormForMarker";
+import {BoxAddTask} from "./componentsTaskList/BoxAddTask";
+import {TasksOfTheDay} from "./componentsTaskList/TasksOfTheDay";
 
 type Props = {
     currentDay: Date,
@@ -48,11 +12,6 @@ type Props = {
     stateMarkerArray: IMarker[]
 }
 
-const TaskText = styled(Typography) <{ $isTaskDone: boolean }>`
-  font-size: 14px;
-  flex: 1 0;
-  text-decoration: ${({$isTaskDone}) => ($isTaskDone ? 'line-through' : "none")}`
-
 export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray}: Props) {
 
     const {lastId, setLastId} = useLastID()
@@ -60,15 +19,13 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
     const [textValue, setTextValue] = useState<string>('')
     const [stateEditTask, setStateEditTask] = useState<boolean>(false)
     const [indexTask, setIndexTask] = useState<number>(0)
-
-    const changeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-        setTextValue(event.currentTarget.value)
-    }
+    const [openModal, setOpenModal] = useState<boolean>(false)
 
     const handleSubmit = (): void => {
         if (stateEditTask) {
             const newTaskArr = stateTaskArray.map((el) => {
-                return el.id === indexTask ? {...el,
+                return el.id === indexTask ? {
+                    ...el,
                     task: textValue,
                     idTypeTask: lastMarkerID,
                 } : el;
@@ -78,7 +35,13 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
             setStateEditTask(false)
             setLastMarkerID(0)
         } else {
-            stateTaskArray.push({task: textValue, done: false, dateTask: currentDay, id: lastId, idTypeTask: lastMarkerID})
+            stateTaskArray.push({
+                task: textValue,
+                done: false,
+                dateTask: currentDay,
+                id: lastId,
+                idTypeTask: lastMarkerID
+            })
             setStateTaskArray([...stateTaskArray])
             setTextValue('')
             setLastId(lastId + 1)
@@ -105,71 +68,34 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
         setStateTaskArray([...stateTaskArray])
     }
 
-    const handleChange = (event: SelectChangeEvent<number>): void => {
-        setLastMarkerID(event.target.value as number);
-    };
+    const handleSubmitMarker = () => {
+        setOpenModal(prev => !prev)
+    }
 
     return (
         <Grid item xs={9}>
-            <Box sx={addTaskContainerSX}>
-                    <FormControl fullWidth style={{display: "flex", flex: '0 2 auto'}}>
-                        <InputLabel id="demo-simple-select-label">Тип</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={lastMarkerID}
-                            label="Тип"
-                            onChange={handleChange}
-                            sx={{'#demo-simple-select':{display: "flex"}}}
-                        >
-                            {stateMarkerArray.map((marker) => (
-                                <MenuItem key={marker.id} sx={{display: "flex", alignItems: "center"}} value={marker.id}><BookmarkIcon sx={{color: marker.colorTask}}/>{marker.typeTask}</MenuItem>
-                            ))
-                            }
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        placeholder="Enter task..."
-                        sx={addTaskInputSX} type="text"
-                        value={textValue}
-                        onChange={changeHandler}
-                    />
-                <Button
-                    variant="contained"
-                    color={stateEditTask ? "warning" : "success"}
-                    onClick={() => handleSubmit()}>{stateEditTask ? "Save" : "Add"}
-                </Button>
-            </Box>
-            <Grid container sx={{width: '100%', margin: '20px'}} spacing={2}>
-                {stateTaskArray.map((task) => {
-                    const dayEnd = new Date(
-                        currentDay.getFullYear(),
-                        currentDay.getMonth(),
-                        currentDay.getDate(),
-                        23,
-                        59,
-                        59)
-                    if (task.dateTask >= currentDay && task.dateTask <= dayEnd) {
-                        return <Grid item xs={12} sx={taskCellSX} key={task.id}>
-                            <BookmarkIcon sx={{color: stateMarkerArray[task.idTypeTask].colorTask}}/>
-                            <Checkbox checked={task.done} onChange={() => setCheckboxStatus(task.id)}/>
-                            <TaskText
-                                variant="h5"
-                                $isTaskDone={task.done}
-                            >
-                                {task.task}
-                            </TaskText>
-                            <span>
-                                <Button variant="contained" sx={buttonTask} color="warning"
-                                        onClick={() => editTask(task.id)}>Edit</Button>
-                                <Button variant="contained" sx={buttonTask} color="error"
-                                        onClick={() => deleteTask(task.id)}>Delete</Button>
-                                </span>
-                        </Grid>
-                    }
-                    return null
-                })}
-            </Grid>
+            <BoxAddTask
+                lastMarkerID={lastMarkerID}
+                setLastMarkerID={setLastMarkerID}
+                stateMarkerArray={stateMarkerArray}
+                setTextValue={setTextValue}
+                textValue={textValue}
+                stateEditTask={stateEditTask}
+                handleSubmit={handleSubmit}
+                handleSubmitMarker={handleSubmitMarker}
+            />
+            <FormForMarker
+                setOpenModal={setOpenModal}
+                openModal={openModal}
+            />
+            <TasksOfTheDay
+                stateTaskArray={stateTaskArray}
+                currentDay={currentDay}
+                stateMarkerArray={stateMarkerArray}
+                setCheckboxStatus={setCheckboxStatus}
+                editTask={editTask}
+                deleteTask={deleteTask}
+            />
         </Grid>
     )
 
