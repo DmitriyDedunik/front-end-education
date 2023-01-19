@@ -1,10 +1,9 @@
 import {Divider, IconButton, List, ListItem, ListItemText} from "@mui/material";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import * as React from 'react';
 import {Dispatch, FC, SetStateAction, useState} from 'react';
-import {useMarker} from "../hooks/calendarEffect";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { IMarker } from "../hooks/calendarEffect";
 
 const buttonCalendar = {
     border: '1px solid #00000036',
@@ -26,22 +25,21 @@ const dayWeekStr = [
 type Props = {
     setCurrentDate: Dispatch<SetStateAction<Date>>,
     tasksByColors: (day: Date) => number[],
+    stateMarkerArray: IMarker[],
 }
 
-export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
+export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors, stateMarkerArray}) => {
 
     const [numbersArr, setNumbersArr] = useState<Date[]>([])
     const [dayForWeek, setDayForWeek] = useState<Date>(new Date())
-    const { stateMarkerArray } = useMarker()
 
     const today = new Date()
 
     let dayWeek: number
 
-    if (today.getDay() === 0){
+    if (today.getDay() === 0) {
         dayWeek = 7
-    }
-    else{
+    } else {
         dayWeek = today.getDay()
     }
 
@@ -54,7 +52,7 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
         numbers.push(day)
     }
 
-    if (numbersArr.length == 0) {
+    if (numbersArr.length === 0) {
         setNumbersArr([...numbers])
     }
 
@@ -96,7 +94,8 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
                 {numbersArr.map((day, index) =>
                     (
 
-                        <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)} key={day.toString()}>
+                        <ListItem sx={buttonCalendar} button divider onClick={() => setCurrentDate(day)}
+                                  key={day.toString()}>
                             <div>
                                 <ListItemText primary={
                                     `${getTimeString(day.getDate())}.${getTimeString(day.getMonth() + 1)}.${day.getFullYear()} ${dayWeekStr[index]}`
@@ -104,8 +103,8 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors}) => {
                             </div>
                             <div>
                                 {tasksByColors(day).map((color: number, index) => (
-                                    <BookmarkIcon key={index} sx={{color: stateMarkerArray[color].colorTask}}/>
-                                )
+                                        <BookmarkIcon key={index} sx={{color: stateMarkerArray[color].colorTask}}/>
+                                    )
                                 )}
                             </div>
                         </ListItem>

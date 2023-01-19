@@ -16,7 +16,7 @@ export const ToDoList: FC = () => {
 
     const [currentDay, setCurrentDate] = useState<Date>(new Date())
     const {stateTaskArray, setStateTaskArray} = useTaskState()
-    const { stateMarkerArray } = useMarker()
+    const { stateMarkerArray, setstateMarkerArray } = useMarker()
 
     const getCurrentDayTasks = (day: Date): ITask[] => {
         return stateTaskArray.filter(el => {
@@ -55,11 +55,13 @@ export const ToDoList: FC = () => {
             <Grid container spacing={2} sx={topGrid}>
                 <Calendar setCurrentDate={setCurrentDate}
                           tasksByColors = {tasksByColors}
+                          stateMarkerArray = {stateMarkerArray}
                 />
                 <TaskList currentDay={currentDay}
                           setStateTaskArray={setStateTaskArray}
                           stateTaskArray={stateTaskArray}
                           stateMarkerArray = {stateMarkerArray}
+                          setstateMarkerArray = {setstateMarkerArray}
                 />
             </Grid>
         </>

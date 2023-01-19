@@ -10,9 +10,10 @@ type Props = {
     setStateTaskArray: Dispatch<SetStateAction<ITask[]>>,
     stateTaskArray: ITask[]
     stateMarkerArray: IMarker[]
+    setstateMarkerArray: Dispatch<SetStateAction<IMarker[]>>,
 }
 
-export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray}: Props) {
+export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMarkerArray, setstateMarkerArray}: Props) {
 
     const {lastId, setLastId} = useLastID()
     const [lastMarkerID, setLastMarkerID] = useState<number>(0)
@@ -87,6 +88,10 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
             <FormForMarker
                 setOpenModal={setOpenModal}
                 openModal={openModal}
+                lastMarkerID={lastMarkerID}
+                stateMarkerArray={stateMarkerArray}
+                setstateMarkerArray = {setstateMarkerArray}
+                setLastMarkerID={setLastMarkerID}
             />
             <TasksOfTheDay
                 stateTaskArray={stateTaskArray}
@@ -95,6 +100,7 @@ export function TaskList({currentDay, setStateTaskArray, stateTaskArray, stateMa
                 setCheckboxStatus={setCheckboxStatus}
                 editTask={editTask}
                 deleteTask={deleteTask}
+                setStateTaskArray = {setStateTaskArray}
             />
         </Grid>
     )

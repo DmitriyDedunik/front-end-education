@@ -1,6 +1,6 @@
 import {Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import React, {ChangeEvent, Dispatch, SetStateAction} from "react";
+import {ChangeEvent, Dispatch, SetStateAction} from "react";
 import {IMarker} from "../../hooks/calendarEffect";
 
 const addTaskContainerSX = {
@@ -37,7 +37,7 @@ export function BoxAddTask(props: Props){
 
     return (
         <Box sx={addTaskContainerSX}>
-            <FormControl fullWidth style={{display: "flex", flex: '0 2 auto'}}>
+            <FormControl fullWidth style={{display: "flex", flex: '0 1.5 auto'}}>
                 <InputLabel id="demo-simple-select-label">Тип</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
@@ -65,6 +65,7 @@ export function BoxAddTask(props: Props){
                 onClick={() => props.handleSubmit()}>{props.stateEditTask ? "Save" : "Add"}
             </Button>
             <Button
+                style={{marginLeft: '10px'}}
                 variant="contained"
                 color={"primary"}
                 onClick={() => props.handleSubmitMarker()}>Add marker
