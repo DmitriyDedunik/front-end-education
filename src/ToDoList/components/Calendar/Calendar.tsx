@@ -114,7 +114,7 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors, stateMarkerA
             </List>
             <div style={{textAlign: "center"}} onClick={() => handleWeek(dayForWeek, true)}>
                 <IconButton>
-                    <ExpandMoreIcon sx={{color: 'green'}}/>
+                    <ExpandMoreIcon/>
                 </IconButton>
             </div>
         </div>
