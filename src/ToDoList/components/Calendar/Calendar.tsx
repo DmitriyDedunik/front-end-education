@@ -51,7 +51,7 @@ export const Calendar: FC<Props> = ({setCurrentDate, tasksByColors, stateMarkerA
         const day = new Date(today.getFullYear(), today.getMonth(), firstDayWeekNumber + i);
         numbers.push(day)
     }
-
+    
     if (numbersArr.length === 0) {
         setNumbersArr([...numbers])
     }

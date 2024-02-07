@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Grid, Typography} from "@mui/material";
 
 import {TaskList} from "./components/TaskList/TaskList";
@@ -18,8 +18,13 @@ export const ToDoList: FC = () => {
     const {stateTaskArray, setStateTaskArray} = useTaskState()
     const { stateMarkerArray, setstateMarkerArray } = useMarker()
 
+    useEffect(() => {
+        console.log(stateTaskArray);
+    }, [stateTaskArray])
+
     const getCurrentDayTasks = (day: Date): ITask[] => {
         return stateTaskArray.filter(el => {
+            debugger
                 const dayEnd = new Date(
                     day.getFullYear(),
                     day.getMonth(),
